@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
+
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
 import './App.css';
 
 import tasks from './samples/tasks.json';
+
 // componentes
 import Tasks from './components/Tasks';
 import TaskForm from './components/TaskForm';
-
+import Posts from './components/Posts';
 
 class App extends Component {
 
@@ -18,17 +22,59 @@ class App extends Component {
     const newTask = {
       title: title,
       description: description,
-      id: 45
+      // agrega el id por el valor de la longitud de el arreglo
+      id: this.state.tasks.length
     }
-    console.log(newTask)
+    this.setState({
+      // voy a tomar todo lo que tenian las tareas y agregare uno nuevo
+      tasks: [...this.state.tasks, newTask]
+    })
+    // console.log(newTask)
   }
 
-  render(){
-    
-    return <div>
+  // eliminar tarea
+  deleteTask = (id) =>{
+    // filter devuelve un nuevo arreglo ignorando algunos datos
+    // por cada tarea, examine si el id de la tarea es diferente del id que me estan pasando
+    // si el id esta en las tareas que tengo, lo va a filtar
+    const newTask = this.state.tasks.filter(task => task.id !== id);
+    this.setState({tasks: newTask})
+  }
 
-      <TaskForm addTask={this.addTask}/>
-      <Tasks tasks={this.state.tasks}/>
+  // cambiar estado "done"
+  checkDone = id =>{
+    // devuelve el array con los datos actualizados 
+      const newTasks = this.state.tasks.map(task => {
+        if(task.id == id){
+          task.done = !task.done
+        }
+        return task;
+      });
+      this.setState({tasks: newTasks})
+  }
+
+  render(){    
+    return <div>
+      <Router>
+        {/* como un href de html */}
+        <Link to="/">Home</Link>
+        <br/>
+        <Link to="/posts">Posts</Link>
+        <Route exact path="/" render={() => {
+          return <div>
+            <TaskForm addTask={this.addTask}/>
+            <Tasks 
+              tasks={this.state.tasks} 
+              deleteTask={this.deleteTask} 
+              checkDone={this.checkDone}         
+            />
+          </div>
+        }} >
+        </Route>
+        <Route path="/posts" component={Posts}/>
+
+      </Router>
+      
     </div>
   }
 }

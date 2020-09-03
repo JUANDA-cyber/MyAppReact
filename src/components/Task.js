@@ -11,18 +11,17 @@ class Task extends Component {
         }
     }
 
-
     render(){
         const {task} = this.props;
         // const redColor = {background:'red'};
 
     return <div className='gray' style={this.StyleComplete()}>
             {task.title} - 
-            {task.escription} - 
+            {task.description} - 
             {task.done} -
             {task.id}
-            <input type="checkbox" />
-            <button style={btnDelete}>
+            <input type="checkbox" onChange={this.props.checkDone.bind(this, task.id)}/>
+            <button style={btnDelete} onClick={this.props.deleteTask.bind(this, task.id)}>
                 x
             </button>
        </div>
@@ -42,8 +41,5 @@ const btnDelete ={
     borderRadius: '50%',
     cursor: 'pointer'
 }
-
-
-
 
 export default Task;
